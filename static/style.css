@@ -1,0 +1,131 @@
+/* insipx.dev — intentionally small. One column, one family, two themes. */
+
+:root {
+  --bg: #ffffff;
+  --fg: #24292e;
+  --muted: #6a737d;
+  --link: #205ea6;
+  --rule: #e1e4e8;
+  --mark: #24292e;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15181c;
+    --fg: #d3d7db;
+    --muted: #8b949e;
+    --link: #7cb0e6;
+    --rule: #2e343b;
+    --mark: #d3d7db;
+  }
+}
+
+* { box-sizing: border-box; }
+
+html { height: 100%; }
+
+body {
+  margin: 0 auto;
+  padding: 2.5rem 1.25rem 1.5rem;
+  max-width: 44rem;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: ui-monospace, "SF Mono", "JetBrains Mono", "Cascadia Code",
+    Menlo, Consolas, monospace;
+  font-size: 0.9375rem;
+  line-height: 1.65;
+}
+
+main { flex: 1 1 auto; }
+
+/* --- nav --- */
+
+nav {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 3rem;
+}
+
+nav a {
+  color: var(--muted);
+  text-decoration: none;
+}
+
+nav a:hover { color: var(--fg); }
+
+nav a[aria-current="page"] {
+  color: var(--fg);
+  text-decoration: underline;
+  text-underline-offset: 0.35em;
+  text-decoration-thickness: 2px;
+}
+
+/* --- content --- */
+
+h1 {
+  font-size: 1.25rem;
+  margin: 0 0 1.25rem;
+}
+
+h2 {
+  font-size: 1rem;
+  margin: 2.25rem 0 0.75rem;
+}
+
+p, ul, ol { margin: 0 0 1rem; }
+
+ul, ol { padding-left: 1.25rem; }
+
+li { margin-bottom: 0.5rem; }
+
+a {
+  color: var(--link);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+}
+
+a:hover { text-decoration-thickness: 2px; }
+
+:focus-visible {
+  outline: 2px solid var(--link);
+  outline-offset: 2px;
+}
+
+code {
+  font-family: inherit;
+  background: color-mix(in srgb, var(--rule) 55%, transparent);
+  padding: 0.1em 0.3em;
+  border-radius: 3px;
+}
+
+pre {
+  overflow-x: auto;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--rule);
+  border-radius: 4px;
+}
+
+pre code { background: none; padding: 0; }
+
+/* --- footer --- */
+
+footer {
+  margin-top: 4rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--rule);
+}
+
+footer .gh {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--mark);
+  text-decoration: none;
+}
+
+footer .gh:hover { text-decoration: underline; }
+
+footer svg { display: block; }
