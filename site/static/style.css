@@ -110,6 +110,21 @@ pre {
 
 pre code { background: none; padding: 0; }
 
+/* --- post list --- */
+
+.posts {
+  list-style: none;
+  padding-left: 0;
+}
+
+.posts li {
+  display: flex;
+  gap: 1rem;
+  justify-content: space-between;
+}
+
+time { color: var(--muted); }
+
 /* --- footer --- */
 
 footer {

@@ -2,8 +2,7 @@
 title = "Resume"
 +++
 
-_PDF version [here](/resume.pdf) — drop `resume.pdf` into `static/` to make that
-link live._
+PDF version [here](/resume.pdf).
 
 ## Experience
 

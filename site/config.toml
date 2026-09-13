@@ -8,3 +8,7 @@ build_search_index = false
 
 [extra]
 github = "insipx"
+
+[markdown.highlighting]
+light_theme = "catppuccin-latte"
+dark_theme = "catppuccin-mocha"

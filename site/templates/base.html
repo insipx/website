@@ -12,8 +12,9 @@
 {% set path = current_path | default(value="/") %}
 <nav>
   <a href="/" {% if path == "/" %}aria-current="page"{% endif %}>About</a>
+  <a href="/blog/" {% if path is starting_with(pat="/blog") %}aria-current="page"{% endif %}>Blog</a>
   <a href="/links/" {% if path == "/links/" %}aria-current="page"{% endif %}>Links</a>
-  <a href="/resume/" {% if path == "/resume/" %}aria-current="page"{% endif %}>Resume</a>
+  <a href="/resume.pdf">Resume</a>
 </nav>
 <main>
 {% block content %}{% endblock content %}
