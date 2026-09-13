@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -e
+if [[ ! -d "/Users/andrewplaza/code/insipx/website" ]]; then
+  echo "Cannot find source directory; Did you move it?"
+  echo "(Looking for "/Users/andrewplaza/code/insipx/website")"
+  echo 'Cannot force reload with this script - use "direnv reload" manually and then try again'
+  exit 1
+fi
+
+# rebuild the cache forcefully
+_nix_direnv_force_reload=1 direnv exec "/Users/andrewplaza/code/insipx/website" true
