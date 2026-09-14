@@ -1,17 +1,20 @@
 {
-  rust-bin,
-  makeRustPlatform,
+  craneLib,
+  pkg-config,
   lib,
+  stdenv,
 }:
-let
-
-  platform = makeRustPlatform {
-    inherit (rust-bin.selectLatestNightlyWith (toolchain: toolchain.minimal)) cargo rustc;
-  };
-in
-platform.buildRustPackage {
-  pname = "insipx-website";
-  version = "0.1.0";
-  src = ./.;
-  cargoSha256 = lib.fakeSha256;
-}
+craneLib.buildPackage (
+  lib.optionalAttrs stdenv.hostPlatform.isMusl {
+    RUSTFLAGS = "-C target-feature=+crt-static";
+    doCheck = false;
+  }
+  // {
+    pname = "website-srv";
+    src = craneLib.cleanCargoSource ./.;
+    version = "0.1.0";
+    strictDeps = true;
+    nativeBuildInputs = [ pkg-config ];
+    CARGO_BUILD_TARGET = stdenv.hostPlatform.rust.rustcTarget;
+  }
+)
