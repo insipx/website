@@ -12,6 +12,8 @@ dockerTools.buildLayeredImage {
     "website-srv"
     "--directory"
     "${website}"
+    "--port"
+    "8080"
   ];
   contents = [
     srv

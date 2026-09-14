@@ -66,10 +66,10 @@ async fn main() -> Result<(), Report> {
         tracing_subscriber::registry().with(fmt::layer()).init();
     }
 
-    tracing::info!("serving to 127.0.0.1:{port}");
+    tracing::info!("serving to 0.0.0.0:{port}");
     let route = warp::fs::dir(dir).with(warp::trace::request());
 
-    warp::serve(route).run(([127, 0, 0, 1], port)).await;
+    warp::serve(route).run(([0, 0, 0, 0], port)).await;
 
     Ok(())
 }
