@@ -7,10 +7,18 @@ Minimal Zola site. About (home) / Links / Resume, GitHub footer.
     zola serve        # http://127.0.0.1:1111
     zola build        # output in public/
 
-## Before deploying
+## Build the Docker image
 
-1. Set `base_url` in `config.toml` to your real domain.
-2. Edit content:
-   - `content/_index.md` -> About (homepage)
-   - `content/links.md` -> Links (Projects / Interesting sections)
-   - `content/resume.md` -> Resume
+    nix build .#image-x86_64
+    # or for aarch64
+    nix build .#image-aarch64
+
+## build just the server binary
+
+    nix build .#srv
+
+## build just the server binary for musl
+
+    nix build .#srv-musl64
+    # or for aarch64 musl
+    nix build .#srv-aarch64

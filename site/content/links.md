@@ -8,9 +8,19 @@ title = "Links"
   protocol, with FFI bindings for Swift, Kotlin, Node, and WASM.
 - [nixpkgs contributions](https://github.com/NixOS/nixpkgs/pulls?q=is%3Apr+author%3Ainsipx)
   — Darwin and iOS cross-compilation, among other things.
-- Something else here.
+- [my homelab](https://github.com/insipx/jupiter)
+- [this website](https://github.com/insipx/website/)
+- [brainfuck but with emojis using `peg`](https://github.com/Romulus10/emotif___)
+- [WebAssembly SQLite Extension for Diesel](https://github.com/xmtp/sqlite-web-rs)
+- [my neovim configuration](https://github.com/insipx/neovim)
+- [a NeXTSTEP inspired gui-OS with soon-to-be WebAssembly aspirations](https://github.com/insipx/portfolio-os)
+- [xchat](https://github.com/insipx/xchat) an experiment with ratatui UI for
+  libxmtp
+- [coil](https://github.com/insipx/coil) proc macro for an async PostgreSQL work
+  queue based on [swirl](https://github.com/sgrif/swirl)
+- [ruwm](https://github.com/insipx/Ruwm/) my attempt at writing a Linux Window
+  Manager in Rust
 
 ## Interesting
 
-- [The Monospace Web](https://owickstrom.github.io/the-monospace-web/) —
-  everything aligned to a character grid.
+- [The Monospace Web](https://owickstrom.github.io/the-monospace-web/)

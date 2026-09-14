@@ -15,6 +15,7 @@ taxonomies = [
 
 [extra]
 github = "insipx"
+bluesky = "insipx.bsky.social"
 
 [markdown.highlighting]
 light_theme = "catppuccin-latte"

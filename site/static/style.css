@@ -45,8 +45,19 @@ main { flex: 1 1 auto; }
 
 nav {
   display: flex;
+  align-items: center;
   gap: 1.5rem;
   margin-bottom: 3rem;
+}
+
+nav .avatar { display: block; }
+
+nav .avatar img {
+  display: block;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--rule);
 }
 
 nav a {
@@ -110,6 +121,15 @@ pre {
 
 pre code { background: none; padding: 0; }
 
+main img {
+  display: block;
+  width: 100%;
+  max-width: 16rem;
+  height: auto;
+  margin: 1.5rem 0;
+  border-radius: 4px;
+}
+
 /* --- post list --- */
 
 .posts {
@@ -131,9 +151,13 @@ footer {
   margin-top: 4rem;
   padding-top: 1rem;
   border-top: 1px solid var(--rule);
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
 }
 
-footer .gh {
+footer .gh,
+footer .social {
   display: inline-flex;
   align-items: center;
   gap: 0.5rem;
@@ -141,6 +165,7 @@ footer .gh {
   text-decoration: none;
 }
 
-footer .gh:hover { text-decoration: underline; }
+footer .gh:hover,
+footer .social:hover { text-decoration: underline; }
 
 footer svg { display: block; }
