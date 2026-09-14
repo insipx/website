@@ -4,3 +4,4 @@ resources:
   - security.yml
 images:
   - name: ghcr.io/insipx/website
+    newTag: ac9b7b37d5e2f6fd99bb7765d341c810ebca8e59
