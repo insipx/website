@@ -1,10 +1,17 @@
 # Set this to your real domain before deploying.
-base_url = "https://insipx.dev"
+base_url = "https://insipx.xyz"
 title = "insipx"
 description = "Andrew (insipx) — systems engineering, Rust, Nix"
 
 compile_sass = false
 build_search_index = false
+
+# The taxonomies to be rendered for the site and their configuration of the default languages
+taxonomies = [
+  { name = "tags", feed = true },           # each tag will have its own feed
+  { name = "categories", paginate_by = 5 }, # 5 items per page for a term
+  { name = "authors" },                     # Basic definition: no feed or pagination
+]
 
 [extra]
 github = "insipx"

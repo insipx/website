@@ -1,9 +1,9 @@
 +++
-layout: post
-title:  "Writing a Window Manager in Rust (Ruwm)"
-date:   2017-07-23 11:30:59 -0500
-categories: code
-tags: linux code desktop
+title = "Writing a Window Manager in Rust (Ruwm)"
+date = 2017-07-23
+authors = [ "Andrew Plaza" ]
+tags = ["code", "linux"]
+categories = ["code"]
 +++
 
 So I decided to write a window manager. Also this is my first post, a whole 6
