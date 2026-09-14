@@ -7,11 +7,11 @@ spec:
   revisionHistoryLimit: 3
   selector:
     matchLabels:
-      app: personal-website
+      app: insipx
   template:
     metadata:
       labels:
-        app: personal-website
+        app: insipx
     spec:
       containers:
         - image: ghcr.io/insipx/website
