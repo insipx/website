@@ -1,10 +1,10 @@
 {
   website,
-  buildLayeredImage,
   srv,
-  stdenv,
+  dockerTools,
+  architecture ? "amd64",
 }:
-buildLayeredImage {
+dockerTools.buildLayeredImage {
   name = "ghcr.io/insipx/website";
   tag = "main";
   created = "now";
@@ -17,5 +17,5 @@ buildLayeredImage {
     srv
     website
   ];
-  architecture = if stdenv.hostPlatform.isAarch64 then "arm64" else "amd64";
+  inherit architecture;
 }

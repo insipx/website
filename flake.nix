@@ -36,6 +36,7 @@
           ];
         };
         pkgs = import nixpkgs common;
+        craneLib = (crane.mkLib pkgs).overrideToolchain (p: p.rust-bin.nightly.latest.minimal);
         crossPkgs = import nixpkgs (
           common
           // {
@@ -48,7 +49,6 @@
             crossSystem = "aarch64-unknown-linux-musl";
           }
         );
-        craneLib = (crane.mkLib pkgs).overrideToolchain (p: p.rust-bin.nightly.latest.minimal);
         crossLib-musl64 = (crane.mkLib crossPkgs).overrideToolchain (
           p:
           p.rust-bin.nightly.latest.minimal.override {
@@ -68,26 +68,15 @@
           srv-aarch64 = crossPkgsAarch64.callPackage ./srv { craneLib = crossLib-aarch64; };
           website = pkgs.callPackage ./site { };
           srv = pkgs.callPackage ./srv { inherit craneLib; };
-          image-x86_64 =
-            let
-              srv-musl64 = self.packages.${system}.srv-musl64;
-              inherit (self.packages.${system}) website;
-            in
-            pkgs.callPackage ./image.nix {
-              inherit website;
-              srv = srv-musl64;
-            };
-          image-aarch64 =
-            let
-              srv-aarch64 = self.packages.${system}.srv-musl64;
-              inherit (self.packages.${system}) website;
-
-            in
-            pkgs.callPackage ./image.nix {
-              inherit website;
-              srv = srv-aarch64;
-            };
-
+          image-x86_64 = pkgs.callPackage ./image.nix {
+            inherit (self.packages.${system}) website;
+            srv = self.packages.${system}.srv-musl64;
+          };
+          image-aarch64 = pkgs.callPackage ./image.nix {
+            inherit (self.packages.${system}) website;
+            srv = self.packages.${system}.srv-aarch64;
+            architecture = "arm64";
+          };
         };
         defaultPackage = self.packages.${system}.website;
         devShell = pkgs.mkShell {
