@@ -14,7 +14,7 @@ spec:
         app: insipx
     spec:
       containers:
-        - image: ghcr.io/insipx/website:main
+        - image: ghcr.io/insipx/website
           name: website
           ports:
             - containerPort: 8080
