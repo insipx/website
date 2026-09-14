@@ -1,0 +1,53 @@
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt-staging
+spec:
+  acme:
+    server: https://acme-staging-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-staging-account
+    solvers:
+      - dns01:
+          webhook:
+            groupName: acme.dnsimple.com
+            solverName: dnsimple
+            config:
+              tokenSecretRef:
+                name: dnsimple-token
+                key: token
+---
+apiVersion: cert-manager.io/v1
+kind: ClusterIssuer
+metadata:
+  name: letsencrypt
+spec:
+  acme:
+    server: https://acme-v02.api.letsencrypt.org/directory
+    privateKeySecretRef:
+      name: letsencrypt-account
+    solvers:
+      - dns01:
+          webhook:
+            groupName: acme.dnsimple.com
+            solverName: dnsimple
+            config:
+              tokenSecretRef:
+                name: dnsimple-token
+                key: token
+---
+apiVersion: cert-manager.io/v1
+kind: Certificate
+metadata:
+  name: insipx-xyz
+  namespace: website
+spec:
+  secretName: insipx-xyz-tls
+  dnsNames:
+    - insipx.xyz
+    - www.insipx.xyz
+  issuerRef:
+    # Start on staging (no rate limits). Flip to `letsencrypt` once READY.
+    name: letsencrypt-staging
+    kind: ClusterIssuer

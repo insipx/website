@@ -12,7 +12,7 @@
 {% set path = current_path | default(value="/") %}
 <nav>
   <a class="avatar" href="/" aria-label="Home">
-    <img src="https://github.com/{{ config.extra.github }}.png?size=80" width="40" height="40" alt="">
+    <img src="/avatar.jpg" width="40" height="40" alt="">
   </a>
   <a href="/" {% if path == "/" %}aria-current="page"{% endif %}>About</a>
   <a href="/blog/" {% if path is starting_with(pat="/blog") %}aria-current="page"{% endif %}>Blog</a>

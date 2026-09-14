@@ -1,7 +1,10 @@
+namespace: website
 resources:
   - deploy.yml
   - website-svc.yml
   - ingress.yml
+  - middleware.yml
+  - certificate.yml
   - network-policies.yaml
 images:
   - name: ghcr.io/insipx/website

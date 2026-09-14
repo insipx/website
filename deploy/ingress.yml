@@ -9,7 +9,29 @@ spec:
   routes:
     - match: Host(`insipx.jupiter.lan`)
       kind: Rule
+      middlewares:
+        - name: security-headers
       services:
         - name: website
           port: 80
   tls: {}
+---
+# Public: reached through the rathole tunnel on websecure-external.
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: website-external
+  namespace: website
+spec:
+  entryPoints:
+    - websecure-public
+  routes:
+    - match: Host(`insipx.xyz`) || Host(`www.insipx.xyz`)
+      kind: Rule
+      middlewares:
+        - name: security-headers
+      services:
+        - name: website
+          port: 80
+  tls:
+    secretName: insipx-xyz-tls
