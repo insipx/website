@@ -42,39 +42,52 @@
             crossSystem = "x86_64-unknown-linux-musl";
           }
         );
+        crossPkgsAarch64 = import nixpkgs (
+          common
+          // {
+            crossSystem = "aarch64-unknown-linux-musl";
+          }
+        );
         craneLib = (crane.mkLib pkgs).overrideToolchain (p: p.rust-bin.nightly.latest.minimal);
-        crossLib = (crane.mkLib crossPkgs).overrideToolchain (
+        crossLib-musl64 = (crane.mkLib crossPkgs).overrideToolchain (
           p:
           p.rust-bin.nightly.latest.minimal.override {
             targets = [ "x86_64-unknown-linux-musl" ];
           }
         );
+        crossLib-aarch64 = (crane.mkLib crossPkgsAarch64).overrideToolchain (
+          p:
+          p.rust-bin.nightly.latest.minimal.override {
+            targets = [ "aarch64-unknown-linux-musl" ];
+          }
+        );
       in
       {
         packages = {
-          srv-musl64 = crossPkgs.callPackage ./srv { craneLib = crossLib; };
+          srv-musl64 = crossPkgs.callPackage ./srv { craneLib = crossLib-musl64; };
+          srv-aarch64 = crossPkgsAarch64.callPackage ./srv { craneLib = crossLib-aarch64; };
           website = pkgs.callPackage ./site { };
           srv = pkgs.callPackage ./srv { inherit craneLib; };
-          image =
+          image-x86_64 =
             let
-              srv = self.packages.${system}.srv-musl64;
+              srv-musl64 = self.packages.${system}.srv-musl64;
               inherit (self.packages.${system}) website;
             in
-            pkgs.dockerTools.buildLayeredImage {
-              name = "ghcr.io/insipx/website";
-              tag = "main";
-              created = "now";
-              config.Entrypoint = [
-                "website-srv"
-                "--directory"
-                "${website}"
-              ];
-              contents = [
-                srv
-                website
-              ];
-              architecture = "amd64";
+            pkgs.callPackage ./image.nix {
+              inherit website;
+              srv = srv-musl64;
             };
+          image-aarch64 =
+            let
+              srv-aarch64 = self.packages.${system}.srv-musl64;
+              inherit (self.packages.${system}) website;
+
+            in
+            pkgs.callPackage ./image.nix {
+              inherit website;
+              srv = srv-aarch64;
+            };
+
         };
         defaultPackage = self.packages.${system}.website;
         devShell = pkgs.mkShell {
