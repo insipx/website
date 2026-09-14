@@ -1,7 +1,7 @@
 resources:
   - deploy.yml
   - website-svc.yml
-  - security.yml
+  - ingress.yml
   - network-policies.yaml
 images:
   - name: ghcr.io/insipx/website
