@@ -31,4 +31,6 @@ jobs:
 
       - run: |
           docker load < result
+          docker tag ghcr.io/insipx/website:main ghcr.io/insipx/website:${{ github.sha }}
+          docker push ghcr.io/insipx/website:${{ github.sha }}
           docker push ghcr.io/insipx/website:main
