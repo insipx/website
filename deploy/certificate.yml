@@ -1,4 +1,8 @@
 ---
+# ACME via cert-manager, HTTP-01. cert-manager creates a temporary Ingress for
+# /.well-known/acme-challenge/<token>; traefik serves it on `web` (port 80),
+# which outranks the HostRegexp(.+) https-redirect (priority 1). Port 80 must
+# reach traefik from the internet.
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
 metadata:
@@ -9,14 +13,13 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-staging-account
     solvers:
-      - dns01:
-          webhook:
-            groupName: acme.dnsimple.com
-            solverName: dnsimple
-            config:
-              tokenSecretRef:
-                name: dnsimple-token
-                key: token
+      - http01:
+          ingress:
+            ingressClassName: traefik
+            ingressTemplate:
+              metadata:
+                annotations:
+                  traefik.ingress.kubernetes.io/router.entrypoints: web
 ---
 apiVersion: cert-manager.io/v1
 kind: ClusterIssuer
@@ -28,14 +31,13 @@ spec:
     privateKeySecretRef:
       name: letsencrypt-account
     solvers:
-      - dns01:
-          webhook:
-            groupName: acme.dnsimple.com
-            solverName: dnsimple
-            config:
-              tokenSecretRef:
-                name: dnsimple-token
-                key: token
+      - http01:
+          ingress:
+            ingressClassName: traefik
+            ingressTemplate:
+              metadata:
+                annotations:
+                  traefik.ingress.kubernetes.io/router.entrypoints: web
 ---
 apiVersion: cert-manager.io/v1
 kind: Certificate
