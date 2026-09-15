@@ -12,5 +12,6 @@ spec:
     referrerPolicy: strict-origin-when-cross-origin
     customResponseHeaders:
       # style-src needs 'unsafe-inline': Zola's syntax highlighter emits inline style= attrs.
-      Content-Security-Policy: "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'none'; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
+      # allow umami
+      Content-Security-Policy: "default-src 'self'; style-src 'self' 'unsafe-inline'; script-src 'self' https://cloud.umami.is; connect-src 'self' https://gateway.umami.is; object-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'; upgrade-insecure-requests"
       Permissions-Policy: "camera=(), microphone=(), geolocation=(), interest-cohort=()"
