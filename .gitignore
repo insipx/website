@@ -6,3 +6,4 @@ result/**
 public
 public/**
 **/target/**
+.direnv/**
