@@ -50,6 +50,5 @@ spec:
     - insipx.xyz
     - www.insipx.xyz
   issuerRef:
-    # Start on staging (no rate limits). Flip to `letsencrypt` once READY.
-    name: letsencrypt-staging
+    name: letsencrypt
     kind: ClusterIssuer
