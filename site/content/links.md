@@ -24,3 +24,5 @@ title = "Links"
 ## Interesting
 
 - [The Monospace Web](https://owickstrom.github.io/the-monospace-web/)
+- [Architecture of Open Source](https://aosabook.org/en/)
+- [Handwiring a Keyboard](https://www.masterzen.fr/2018/12/16/handwired-keyboard-build-log-part-1/)
