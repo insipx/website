@@ -1,6 +1,7 @@
 +++
 title = "Hello, world"
 date = 2026-09-12
+draft = true
 +++
 
 First post. Mostly here so there's something to look at while the blog styling
