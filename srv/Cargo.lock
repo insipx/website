@@ -1578,6 +1578,7 @@ dependencies = [
 name = "website-srv"
 version = "0.1.0"
 dependencies = [
+ "http",
  "lexopt",
  "simple-eyre",
  "tokio",

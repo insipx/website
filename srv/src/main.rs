@@ -1,7 +1,14 @@
+use http::{
+    HeaderValue,
+    header::{CACHE_CONTROL, ETAG, LAST_MODIFIED},
+};
 use simple_eyre::eyre::Report;
 use tracing_subscriber::{fmt, prelude::*};
 use url::Url;
-use warp::Filter;
+use warp::{Filter, Reply};
+
+mod etag;
+use etag::*;
 
 #[derive(Clone)]
 pub struct Args {
@@ -66,8 +73,20 @@ async fn main() -> Result<(), Report> {
         tracing_subscriber::registry().with(fmt::layer()).init();
     }
 
-    tracing::info!("serving to 0.0.0.0:{port}");
-    let route = warp::fs::dir(dir).with(warp::trace::request());
+    let etag = ETag::new(&dir);
+
+    tracing::info!("serving {dir} on 0.0.0.0:{port} etag={}", &etag);
+
+    let route = warp::fs::dir(dir)
+        .map(move |f: warp::fs::File| {
+            let mut res = f.into_response();
+            res.headers_mut().remove(LAST_MODIFIED);
+            res.headers_mut().insert(ETAG, etag.into());
+            res.headers_mut()
+                .insert(CACHE_CONTROL, HeaderValue::from_static("no-cache"));
+            res
+        })
+        .with(warp::trace::request());
 
     warp::serve(route).run(([0, 0, 0, 0], port)).await;
 

@@ -16,3 +16,4 @@ warp = { version = "0.4.3", features = ["server"] }
 simple-eyre = "0.3"
 url = "2.5"
 tracing-opentelemetry = "0.33.0"
+http = "1.5"
