@@ -20,6 +20,8 @@ title = "Links"
   queue based on [swirl](https://github.com/sgrif/swirl)
 - [ruwm](https://github.com/insipx/Ruwm/) my attempt at writing a Linux Window
   Manager in Rust
+- [Eve Online Market Finder](https://github.com/insipx/EveOnlineMarketFinder)
+  One of my first attempts at a Rust program to help me in Eve Online
 
 ## Interesting
 
