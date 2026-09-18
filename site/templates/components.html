@@ -1,0 +1,20 @@
+{# Usage in markdown: {{ <image path="my_rice.png" alt="desktop" width={800} /> }}
+   `path` is searched in /, /static, /content (see zola image-processing docs). #}
+{% component image(path: string, alt: string = "", width: integer = 800, align: string = "center") -%}
+{% set mdata = get_image_metadata(path=path) %}
+{% if mdata.width > width %}
+  {% set image = resize_image(path=path, width=width, op="fit_width") %}
+  {% set src = image.url %}
+  {% set w = image.width %}
+  {% set h = image.height %}
+{% else %}
+  {% set src = get_url(path=path) %}
+  {% set w = mdata.width %}
+  {% set h = mdata.height %}
+{% endif %}
+<p {% if align == "center" %}align="center"{% else %}style="float: {{ align }}; margin: 0 1em 1em 1em;"{% endif %}>
+  <a href="{{ get_url(path=path) }}" target="_blank">
+    <img class="sized" src="{{ src }}" alt="{{ alt }}" width="{{ w }}" height="{{ h }}" loading="lazy">
+  </a>
+</p>
+{%- endcomponent %}

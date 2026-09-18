@@ -23,7 +23,7 @@ other interesting code-bases (like [rustpeg](https://crates.io/crates/peg) and
 If you came to this post and don't know what a window manager is, let me tell
 you about my obsession for the last 3 years.
 
-![My Setup](/uploads/2017/07/23/my_rice.png)
+{{ <image path="my_rice.png" alt="desktop" width={800} /> }}
 
 Tinkering is something of a hobby for me, so a good window manager on a good
 linux distribution is essential. All a WM does is communicate with X11 through
@@ -155,7 +155,3 @@ and setting up an intuitive way to map keys to actions. After some basics in
 that area are done, I will shift gears again and get window mapping working,
 focusing on putting the windows in a fast and efficient B-Tree and implementing
 a re-parenting window-manager according to spec and in the model of i3.
-
-That's my ramble for now; I hope you got something from it
-
---insidious

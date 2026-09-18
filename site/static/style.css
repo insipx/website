@@ -130,6 +130,12 @@ main img {
   border-radius: 4px;
 }
 
+main img.sized {
+  width: auto;
+  max-width: 100%;
+  margin: 1.5rem auto;
+}
+
 /* --- post list --- */
 
 .posts {
