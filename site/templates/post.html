@@ -3,5 +3,26 @@
 {% block content %}
 <h1>{{ page.title }}</h1>
 <time datetime="{{ page.date }}">{{ page.date | date(format="%Y-%m-%d") }}</time>
+{% if page.extra.toc | default(value=false) %}
+{% if page.toc %}
+<aside class="post-toc" aria-labelledby="post-toc-title">
+  <h2 id="post-toc-title">Contents</h2>
+  <ul>
+    {% for heading in page.toc %}
+    <li>
+      <a href="{{ heading.permalink | safe }}">{{ heading.title }}</a>
+      {% if heading.children %}
+      <ul>
+        {% for child in heading.children %}
+        <li><a href="{{ child.permalink | safe }}">{{ child.title }}</a></li>
+        {% endfor %}
+      </ul>
+      {% endif %}
+    </li>
+    {% endfor %}
+  </ul>
+</aside>
+{% endif %}
+{% endif %}
 {{ page.content | safe }}
 {% endblock content %}

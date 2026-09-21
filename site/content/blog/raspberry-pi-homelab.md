@@ -1,6 +1,9 @@
 +++
 title = "Building a NixOS MiniRack with Raspberry Pi 5s"
 date = 2026-09-05
+
+[extra]
+toc = true
 +++
 
 {{
@@ -632,7 +635,7 @@ nix run .#kubenix
 
 Render the manifests with
 
-```
+```bash
 nix run .#kubenix -- render
 ```
 
@@ -669,3 +672,5 @@ cluster deployed with NixOS and Kubenix. Future posts could cover:
 - 2U Mini ITX NAS for a Nix Binary Cache / File Hosting
 - Setting up an AWS Build Server for the Impatient
 - Longhorn on ZFS
+- setting up external reverse proxy gateway incl. the noise protocol
+- cross-compiling rust packages to musl and x86 docker images
