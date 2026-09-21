@@ -17,6 +17,9 @@ taxonomies = [
 github = "insipx"
 bluesky = "insipx.bsky.social"
 
+[markdown]
+github_alerts = true
+
 [markdown.highlighting]
 light_theme = "catppuccin-latte"
 dark_theme = "catppuccin-mocha"
