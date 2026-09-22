@@ -16,6 +16,12 @@ title = "Links"
 - [a NeXTSTEP inspired gui-OS with soon-to-be WebAssembly aspirations](https://github.com/insipx/portfolio-os)
 - [xchat](https://github.com/insipx/xchat) an experiment with ratatui UI for
   libxmtp
+- [substrate-archive](https://github.com/paritytech/substrate-archive/) generic
+  indexing engine for Substrate
+- [desub](https://github.com/paritytech/desub) a tool to de[code] substrate.
+  Used for older substrate versions to maintain backwards compatibility.
+- [dot-jaeger](https://github.com/paritytech/dot-jaeger/tree/master) metrics
+  collection tool for Polkadot Validators.
 - [coil](https://github.com/insipx/coil) proc macro for an async PostgreSQL work
   queue based on [swirl](https://github.com/sgrif/swirl)
 - [ruwm](https://github.com/insipx/Ruwm/) my attempt at writing a Linux Window
