@@ -13,12 +13,12 @@ toc = true
 Every time I’ve tried to self-host something, I end up with a neglected
 single-board computer in a dusty corner of my basement on a version of Ubuntu
 Server. I loved the idea of self-hosting useful apps: an IRC Bouncer,
-[Atuin](https://atuin.sh), or [Actual Budget](https://actualbudget.org/). I
-wanted something I could set up and run with minimal intervention. After a
-month, I would start to forget the software I installed, or the little
+[Atuin](https://atuin.sh), or [Actual Budget](https://actualbudget.org/). After
+a month, I would start to forget the software I installed, or the little
 configuration quirks I made to make it work. My experiments ended with an
-`apt upgrade` or updated Docker image requiring me to re-learn everything I did
-to make my server work in the first place. I would lose interest quickly.
+`apt upgrade` or updated Docker image, requiring me to relearn everything I did
+to make my server work in the first place. I would lose interest quickly. I
+wanted something I could set up and run with minimal intervention.
 
 In January 2025, I discovered Jeff Geerling’s
 [YouTube channel](https://www.youtube.com/c/JeffGeerling). If you don’t know who
@@ -36,21 +36,21 @@ how I could use NixOS to manage my self-hosted devices.
 
 I wanted a cool naming scheme. I like Jupiter. Jupiter is easy because of its
 moons. Honestly, I think the naming scheme is a bit of a cliché, but I like it.
-I even 3D-printed “Jupiter” into the Firewall/Router/Gateway/DNS :).
+I even 3D-printed "Jupiter" into the firewall/router tray :).
 
 # Figuring out the bare minimum
 
-I wanted to have a place to deploy my experiments, without resorting to AWS or
-fly.io. It needed a similar developer experience—something where I could throw
-up my Nix-built Docker Images and have a working host on my internal LAN.
+I wanted to have a place to put my experiments without resorting to something
+like AWS. It needed a similar developer experience—something where I could throw
+up my Nix-built Docker images and have a working host on my internal LAN.
 Finally, I wanted updates to be easier. If I’m running 3+ devices, I am _not_
 SSH’ing each time to run a script manually. It had to be updatable.
 
-## Why NixOS
+## Why NixOS?
 
 Nix's determinism and declarative configuration made it attractive for managing
 configuration across multiple nodes. Nix opens the door for caching, or even
-potentially automated deploys from a binary cache (like cachix).
+potentially automated deploys from a binary cache (like Cachix).
 
 There are a few well-known “nix-ops” tools around. I reached for
 [Colmena](https://colmena.cli.rs/unstable/). I came across it on GitHub before,
@@ -62,21 +62,21 @@ for `nixos-raspberrypi`. Setting up an on-demand beefy build server on AWS to
 speed up deploys is a great cure for my impatience at the cost of a few dollars.
 NixOS makes this workflow easy.
 
-## Why K3s
+## Why K3s?
 
-I decided K3S is the way. K3S is a lighter distribution of K8S that I run with
+I decided K3s is the way. K3S is a lighter distribution of K8S that I run with
 the embedded `etcd`. Part of this project was meant to help me learn Kubernetes,
-and K3S would let me run the Docker Images with the workflow I expected.
+and K3S would let me run the Docker images with the workflow I expected.
 
 ### Kubenix
 
-The one thing unattractive with regards to Kubernetes, however, was the YAML
-manifest format. Spending way too much time configuring GitHub Actions scarred
-me. In addition to my hesitancy with YAML, using Kubernetes would mean the
-project is split between Nix and Kubernetes Manifests. It would require extra
-verification steps ensuring the parts worked well in isolation and as a whole.
-Part of the system would be defined in Nix (The OS configuration, services,
-packages, Kubernetes software itself), while the other would be YAML.
+The one thing unattractive about Kubernetes was the YAML manifest format.
+Spending far too much time configuring GitHub Actions scarred me. In addition to
+my hesitancy with YAML, using Kubernetes would mean the project is split between
+Nix and Kubernetes manifests. It would require extra verification steps,
+ensuring the parts worked well in isolation and as a whole. Part of the system
+would be defined in Nix (the OS configuration, services, packages, and
+Kubernetes software itself), while the other would be YAML.
 
 This discrepancy made me wish a Nix-y way of configuring at least the platform
 to deploy existed. Luckily, I found the
@@ -85,7 +85,7 @@ Kubernetes state with Nix. It is first defined in Nix, then the `kubenix`
 command outputs built Kubernetes manifests. Kubenix handles pruning old state,
 so deployments more accurately reflect what exists on the cluster.
 
-Kubenix solved this problem for me. With Kubenix I could have:
+Kubenix solved this problem for me. With Kubenix I could have the following:
 
 - one language for everything
 - resource types type-checked against the API schema at eval time
@@ -93,20 +93,20 @@ Kubenix solved this problem for me. With Kubenix I could have:
 - prune on apply
 
 This way, I enabled configuring the platform for my apps (OS Hosts, Load
-Balancer, Observability, Metrics) in one language. ArgoCD would let me still use
-kubernetes manifests if I wished.
+Balancer, Observability, and Metrics) in one language. ArgoCD would let me still
+use Kubernetes manifests if I wished.
 
 ### Versatility
 
-Kubernetes comes with a whole bunch of goodies baked in.
-HA/LoadBalancing/Self-Healing, etc. But above all, I liked the extensibility. If
-I wanted, I could (and did!) add ArgoCD for an alternate means of deployment
-with pure Kubernetes manifests (like my
+Kubernetes comes with a bunch of goodies baked in. HA/Load
+Balancing/Self-Healing, etc. But above all, I liked the extensibility. If I
+wanted, I could (and did!) add ArgoCD for an alternate means of deployment with
+pure Kubernetes manifests (like my
 [website](https://github.com/insipx/website/)).
 
 ## Updates
 
-The update flow I settled on is `Renovate` to update helm chart/docker image
+The update flow I settled on is `Renovate` to update Helm chart/docker image
 versions in Kubenix definitions. I merge those in GitHub CI, then update the Nix
 hashes manually next time I pull/want to update. Then I run a single
 `colmena build --on @homelab` to build everything at once (with my AWS build
@@ -123,28 +123,28 @@ flow suits my needs.
 > I extracted relevant bits for this post into
 > [nixos-rpi-lab](https://github.com/insipx/nixos-rpi-lab/tree/main) from
 > [Jupiter](https://github.com/insipx/jupiter). There’s a lot to cover here, so
-> this is probably “part 1” of a series.
+> this is probably "part 1" of a series.
 
 ## Bill of Materials
 
 For the initial version, listed is what I ended up with this to host three
 Kubernetes Control nodes. The K3S control plane nodes double as worker nodes.
 While this uses three nodes, it is possible to run K3S on a single node if one
-desires. I did _not_ have a 3d printer at this point, and went with the GeeekPi
+desires. I did _not_ have a 3D printer at this point and went with the GeeekPi
 rack they sell. The RPi5 piece includes an NVMe SSD adapter.
 
 - 3x Raspberry Pi
 - 3x Official Raspberry Pi Active Cooler
-- 3x NVMe SSDs (luckily I got in before prices went insane)
+- 3x NVMe SSDs (luckily I got them before prices went insane)
 - 1x GeeekPi 10 Inch 2U Rack Mount for Raspberry Pi 5
   - or whatever you got to organize the Raspberry Pis with your switch
 - [1x PoE switch to power the Pis. I went with the GigaPlus 2.5G PoE Switch](http://www.servethehome.com/the-ultimatze-cheap-2-5gbe-switch-mega-round-up-buyers-guide-qnap-netgear-hasivo-mokerlink-trendnet-zyxel-tp-link/)
-- 3x PoE HATs, I went with the one from
+- 3x PoE HATs; I went with the one from
   [Waveshare](https://waveshare.com/poe-hat-h.htm?srsltid=AU7gw4WtQ1RSHX9avbuHuDvnrwXZ6OKI_LJMOO0MF46fIOeJqEWHtMAn)
-  since it is compatible with the active cooler
-- One of the GeekPi 10” Racks to hold all the hardware.
+  since it is compatible with the active cooler.
+- One of the GeekPi 10" racks to hold all the hardware.
   - If you have a 3D printer, I would recommend
-    [printing a KWS Rack instead](https://makerworld.com/en/models/2139130-kws-rack-v-2-heavy-duty-10-inch-homelab-rack#profileId-2317125)
+    [printing a KWS rack instead](https://makerworld.com/en/models/2139130-kws-rack-v-2-heavy-duty-10-inch-homelab-rack#profileId-2317125)
 - A couple of SD cards for the initial NixOS install
 
 ## Architecture
@@ -185,7 +185,18 @@ configuration. While secrets exist encrypted with age and sops-nix, the secrets
 configuration is separate to enable storing the encrypted sops secrets in a
 private repository.
 
-Set up `nixos-rpi-lab` in one spot, and secrets in another:
+The templates include fixes and QoL improvements specific to configuring a
+cluster:
+
+- Enables `services.chrony` with Cloudflare NTS server. Raspberry Pis do not
+  include a clock. I ran into this issue early on: I would restart a PI, and it
+  was no longer able to join a cluster. Turns out, the PI thought it was 2 years
+  ago or something and failed to join.
+- Generations are bound to 7 days. Nix will gc older than that. This can be
+  configured, but the boot partition is small.
+- Config avoids `nixosSystem` recursion on the `nixos-raspberrypi` nixpkgs.
+
+Set up `nixos-rpi-lab` in one spot and secrets in another:
 
 ```bash
 nix flake init -t github:insipx/nixos-rpi-lab#lab
@@ -194,26 +205,28 @@ nix flake init -t github:insipx/nixos-rpi-lab#lab
 nix flake init -t github:insipx/nixos-rpi-lab#secrets
 ```
 
-Change the inputs of the `lab` repository to reference the secrets repository,
+Change the inputs of the `lab` repository to reference the secrets repository:
 
 ```nix
-inputs = {
-  nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
-  nixos-raspberrypi = {
-    url = "github:nvmd/nixos-raspberrypi/main";
+{
+  inputs = {
+    nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
+    nixos-raspberrypi = {
+      url = "github:nvmd/nixos-raspberrypi/main";
+    };
+    lab-secrets = {
+      # if you push it to a git repo, ensure you have
+      # nix setup with your GitHub access token to clone
+      # or use a git+ssh: path
+      # url = "github:you/your-lab-secrets-repo";
+      url = "path:/home/hunter2/path/to/secrets";
+    };
+    # ...
   };
-  lab-secrets = {
-    # if you push it to a git repo, ensure you have
-    # nix setup with your GitHub access token to clone
-    # or use a git+ssh: path
-    # url = "github:you/your-lab-secrets-repo";
-    url = "path:/home/hunter2/path/to/secrets";
-  };
-   # ...
-};
+}
 ```
 
-This will get you this directory structure for the `#lab.`
+This will get you this directory structure for the `#lab`.
 
 <pre class = "diagram">
 .
@@ -242,37 +255,35 @@ for cluster authentication.
 
 For setting up the Raspberry Pis, we care about two things:
 
-- the initial SD-Card image.
-- the `nixos-anywhere` command to push the first configuration.
+- The initial SD-card image.
+- The `nixos-anywhere` command to push the first configuration.
 
 ## Setting up the Pis
 
-For initial installation,
+For the initial installation,
 [nvmd/nixos-raspberrypi](https://github.com/nvmd/nixos-raspberrypi) has great
-info/examples. The first step, after getting all the right materials, is
-figuring out how to get NixOS onto the Raspberry Pi in the first place.
+info/examples. The first step after getting all the right materials is figuring
+out how to get NixOS onto the Raspberry Pi in the first place.
 
-I this approach:
-
-1. Build & Flash the `NixOS` Raspberry Pi image onto the SD card.
-2. Modify the configuration in `installer_images.nix` to let yourself SSH to the
-   Pi after the SD image is booted.
-3. Use `nixos-anywhere` to apply the initial configuration, which includes the
-   NVMe filesystem configuration.
+1. Build and flash the NixOS Raspberry Pi image onto the SD card.
+2. Modify the configuration in installer_images.nix to allow SSH access to the
+   Pi after the SD image has booted.
+3. Use nixos-anywhere to apply the initial configuration, which includes the
+   NVMe file system configuration.
 4. Remove the SD card to force the Pi to boot from NVMe. This is important for
    debugging. If something goes wrong, we can insert the original SD image to
-   access a nix-chroot environment and fix it.
+   access a Nix chroot environment and fix it.
 
-The SD image we build is `initialInstall`. This image will include all the NixOS
-configuration modules in `base/` and `machine-specific/rpi5`. This includes the
-custom kernel from `nvmd/nixos-raspberrypi` and other quality-of-life packages.
-This explicitly excludes `filesystem.nix`, which is set up in the next step with
-Disko. This is where you should modify the SSH keys and other configuration you
-might want on the Pis, like the specific `terminfo` package of your favorite
-terminal emulator, or a preferred text editor. This SD Card will be reusable for
-any further Raspberry Pis you set up.
+The SD image we build is initialInstall and includes all the NixOS configuration
+modules in base/ and machine-specific/rpi5. This includes the custom kernel from
+nvmd/nixos-raspberrypi and other quality-of-life packages. This explicitly
+excludes filesystem.nix, which is set up in the next step with Disko, where you
+should modify the SSH keys and other configuration you might want on the Pis,
+such as the specific terminfo package for your favorite terminal emulator or a
+preferred text editor. The SD card will be reusable for any further Raspberry
+Pis you set up.
 
-Once ready, the commands are roughly,
+Once ready, the commands are roughly:
 
 ```bash
 # build & the image, from the #lab flake repository
@@ -286,19 +297,19 @@ sudo dd if=nixos-installer-rpi5-kernel.img of=/dev/sdX bs=4M status=progress con
 ```
 
 Inserting the SD card and starting the RPI (with a screen attached), you will
-see a screen that lists a user to log in, an IP Address, and other information.
+see a screen that lists a user to log in, an IP address, and other information.
 In the past, I’ve found the IP by checking DHCP leases for anything new. You
 should be able to SSH, which is important for the nixos-anywhere command.
 
 ## nixos-anywhere
 
 Once the SD card is installed, the next step is making use of the connected NVMe
-Drive. K3S can be write-heavy; an NVMe will last longer than an SD card. This
-setup would work with SD cards; however, expect performance degradation.
+drive. K3S can be write-heavy; an NVMe will last longer than an SD card. While
+this setup would work with SD cards, expect performance degradation.
 
 The configuration uses [Disko](https://github.com/nix-community/disko) for
 initial disk setup. The setup is almost completely
-[verbatim the example in nixos-raspberrypi](https://github.com/nvmd/nixos-raspberrypi-demo/blob/main/disko-nvme-zfs.nix).
+[verbatim to the example in nixos-raspberrypi](https://github.com/nvmd/nixos-raspberrypi-demo/blob/main/disko-nvme-zfs.nix).
 The one difference is important, because it enables Longhorn.
 
 Towards the bottom, an ext4 volume is defined. The homelab module allows
@@ -308,26 +319,31 @@ overlay to make use of it. This can be skipped if the install is a pure SD-card
 install or if you choose a filesystem other than ZFS.
 
 ```nix
-disko.devices.zpool.rpool.datasets."longhorn-ext4" = {
+{
+  disko.devices.zpool.rpool.datasets."longhorn-ext4" = {
     type = "zfs_volume";
     content = {
-        type = "filesystem";
-        format = "ext4";
-        mountpoint = "/var/lib/longhorn";
-        mountOptions = [ "noatime" "discard" ];
+      type = "filesystem";
+      format = "ext4";
+      mountpoint = "/var/lib/longhorn";
+      mountOptions = [
+        "noatime"
+        "discard"
+      ];
     };
-};
+  };
+}
 ```
 
 Apply the initial NixOS configuration and set up the NVMe external disk with ZFS
-by using `nixos-anywhere`
+by using `nixos-anywhere`.
 
 ```bash
 nixos-anywhere --flake .#initialInstall root@your_node_ip
 ```
 
 This will install and reboot. Then you can remove the SD card and reboot into
-the NixOS install from the NvME.
+the NixOS install from the NVMe.
 
 ## The HomeLab NixOS Module
 
@@ -338,32 +354,34 @@ lists available options. Hive configuration has some default values set. An
 example configuration looks like
 
 ```nix
-rpiHomeLab = {
-  networking = {
-    interface = "end0";
-    hostId = "a1b2c3d4"; # Use a unique value for each node.
-    hostName = "worker-01";
-    address = "10.10.69.20/22";
-  };
+{
+  rpiHomeLab = {
+    networking = {
+      interface = "end0";
+      hostId = "a1b2c3d4"; # Use a unique value for each node.
+      hostName = "worker-01";
+      address = "10.10.69.20/22";
+    };
 
-  k3s = {
-    enable = true;
-    leader = false;
-    agent = true;
-    leaderAddress = "https://10.10.69.10:6443";
-    longhorn = true;
-    longhornDiskSize = "800G"; # Adjust for this node's available storage.
+    k3s = {
+      enable = true;
+      leader = false;
+      agent = true;
+      leaderAddress = "https://10.10.69.10:6443";
+      longhorn = true;
+      longhornDiskSize = "800G"; # Adjust for this node's available storage.
+    };
   };
-};
+}
 ```
 
 `longhornDiskSize` should be changed depending on the nodes' available storage.
-Leave some room for the OS; in this case, `800G` gives 800 Gigabytes for
-Longhorn and leaves ~200 Gigabytes for the OS. Longhorn itself can be disabled
+Leave some room for the OS. In this case, `800G` gives 800 gigabytes for
+Longhorn and leaves ~200 gigabytes for the OS. Longhorn itself can be disabled
 with `longhorn = false`. This will avoid creating the ext4 ZFS volume.
 
-The module is meant to simplify per-node configuration, and is loaded with some
-fixes to make a k3s setup on Raspberry Pis with ZFS work.
+The module is meant to simplify per-node configuration and is loaded with some
+fixes to make a K3s setup on Raspberry Pis with ZFS work.
 
 ## Deploying with Colmena
 
@@ -389,67 +407,142 @@ Ensure each node has a user with your SSH key on it, setting it in the Colmena
 configuration.
 
 ```nix
-deployment = {
-  targetHost = "node1.lab.lan";
-  targetUser = "user";
-  tags = [
-    "homelab"
-    "control"
-  ];
-};
+{
+  deployment = {
+    targetHost = "node1.lab.lan";
+    targetUser = "user";
+    tags = [
+      "homelab"
+      "control"
+    ];
+  };
+}
 ```
 
-At this point, colmena should be able to build/apply to nodes. Ensure that `k3s`
+At this point, Colmena should be able to build/apply to nodes. Ensure that `k3s`
 is disabled, however, since k3s requires extra steps to bootstrap the secret
-correctly.
+correctly. Secrets set to 'true' also will not be used unless
+`k3s.enable = true`, so no worries there about exposing anything K3S-related.
 
 ## Setting up Secrets
 
 In order for k3s to work, it needs a
 [shared token](https://docs.k3s.io/cli/token) for nodes to join the network.
 Since in this guide we are setting up three control plane nodes, they will all
-have access to the server token. If you set up additional worker nodes, they
-should use a separate worker token, which restricts what a worker node can do
-with the cluster.
+have access to the server token.
 
-### Bootstrapping the k3s secret and leader node
+### Bootstrapping the K3s Secret and Leader Node
 
 Before we do anything, we need to set up the leader with a secret, then copy the
 full server token k3s generates from that leader, and replace k3s_token in our
 SOPS secrets with that token.
 
-#### Set up SOPS secrets repository
+#### Set up SOPs secrets repository
 
 At the start, we initialized a secrets repository but didn’t use it. In
 `.sops.yaml` of the secrets repository, add the public keys to encrypt with. It
 looks like this:
 
 ```yaml
+# This example uses YAML anchors which allows reuse of multiple keys
+# without having to repeat yourself.
 # Also see https://github.com/Mic92/dotfiles/blob/d6114726d859df36ccaa32891c4963ae5717ef7f/nixos/.sops.yaml
 # for a more complex example.
 keys:
-  - &admin age1yubikey1qw0ux80u4fpkrl7xuqap8hufkjey3tfrnhcwge5dmzwnrstlv4g8u9ztmdj
-  - &node_1 age1nzefcfqa5kzjz47paehsqqxpcm4lmpe7902kzevcva546v8x95hqf540wg
+  - &admin age1REPLACE_WITH_YOUR_ADMIN_PUBLIC_KEY
+  - &node_1 age1REPLACE_WITH_NODE_1_HOST_KEY # ./keyscan.sh node1
+  - &node_2 age1REPLACE_WITH_NODE_2_HOST_KEY # ./keyscan.sh node2
+  - &node_3 age1REPLACE_WITH_NODE_3_HOST_KEY # ./keyscan.sh node3
 creation_rules:
   - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
     key_groups:
       - age:
           - *admin
           - *node_1
+          - *node_2
+          - *node_3
 ```
 
 I store my keys on YubiKeys and use `age-plugin-yubikey` to get a usable public
-key from it. SSH keys or other key schemes work too.
+key from them. SSH keys or other key schemes work too.
 [Sops-nix](https://github.com/Mic92/sops-nix) has an abundance of documentation
 on the subject.
 
-Once you have the keys, you need to create the secrets.
+#### Scanning for public keys
+
+Before we can encrypt anything, we need to know what to encrypt it to. The
+secrets flake template includes a `keyscan` utility. It can be used with
+`nix run .#keyscan -- $HOST`. If my $HOST is `192.168.1.100`, keyscan may return
+something like this:
+
+```bash
+➜ nix run .#keyscan -- 192.168.1.100
+skipped key: got ssh-rsa key type, but only ed25519 keys are supported
+age1q9420838rcwr3mykp3juf3f5ntwwudndlmeyxmaanr5ekqmgzdvshjph7z
+```
+
+`age1q9420838rcwr3mykp3juf3f5ntwwudndlmeyxmaanr5ekqmgzdvshjph7z` goes in the
+`keys:` section of `.sops.yaml`, and the name `node_1` goes into key_groups.
+This will indicate to encrypt anything in `path_regex` with the given public
+keys. For instance, the YAML would look like the following:
+
+```yaml
+# This example uses YAML anchors which allows reuse of multiple keys
+# without having to repeat yourself.
+# Also see https://github.com/Mic92/dotfiles/blob/d6114726d859df36ccaa32891c4963ae5717ef7f/nixos/.sops.yaml
+# for a more complex example.
+keys:
+  - &admin age1REPLACE_WITH_YOUR_ADMIN_PUBLIC_KEY
+  - &node_1 age1q9420838rcwr3mykp3juf3f5ntwwudndlmeyxmaanr5ekqmgzdvshjph7z# ./keyscan.sh 192.168.1.100
+  - &node_2 age1REPLACE_WITH_NODE_2_HOST_KEY # ./keyscan.sh node2
+  - &node_3 age1REPLACE_WITH_NODE_3_HOST_KEY # ./keyscan.sh node3
+creation_rules:
+  - path_regex: secrets/[^/]+\.(yaml|json|env|ini)$
+    key_groups:
+      - age:
+          - *admin
+          - *node_1
+          - *node_2
+          - *node_3
+```
+
+It's important to update the keys after modifying `.sops.yaml`. Otherwise, the
+encrypted ciphertext will not be updated. Before we update keys, run
+`sops secrets/homelab.yaml` just to have something for SOPS to encrypt.
+
+```bash
+sops secrets/homelab.yaml # this will open a file with $EDITOR. just save & close.
+sops updatekeys
+```
+
+And of course, commit it. Once committed, run `nix flake update $secrets-input`
+in the lab repository.
+
+The full flow might look like this:
+
+```bash
+nix run keyscan -- $one_of_my_node_ips # get the age public key
+$EDITOR .sops.yaml # update the key for $node
+sops updatekeys # repeat for all nodes
+git commit -am "add node_$X key" && git push origin main
+cd $lab_repository
+nix flake update $secrets_input
+```
+
+> [!NOTE]
+> Re-installing a node with `nixos-anywhere` regenerates its host key, so the
+> node will need to be rescanned (with `keyscan`) and the secrets will need to
+> be re-encrypted (`sops updatekeys`). This workflow counts on the host key
+> generated during install, so there is no copying keys between hosts. Private
+> keys never leave the host they were generated on.
+
+Once you have the keys, you have to create the secrets.
 
 ```bash
 sops secrets/homelab.yaml
 ```
 
-That will open the file with sops, and it looks like:
+That will open the file with SOPS, and it looks like this:
 
 ```yaml
 hello: Welcome to SOPS! Edit this file as you please!
@@ -493,7 +586,9 @@ In the hive template, the `lab-secrets` module should be imported. In the
 configuration for each node,
 
 ```nix
-lab-secrets.settings.k3s = true;
+{
+  lab-secrets.settings.k3s = true;
+}
 ```
 
 Enables access to those secrets.
@@ -504,7 +599,9 @@ For the bootstrap, we are setting up the leader node first. Enable `k3s` and
 A full leader configuration in Colmena will look like:
 
 ```nix
-node1 = _: {
+{
+  # ...
+  node1 = _: {
     imports = [
       ./../machine-specific/rpi5
     ]
@@ -536,6 +633,7 @@ node1 = _: {
       "--tls-san 10.10.10.10"
     ];
   };
+}
 ```
 
 Run the apply
@@ -567,23 +665,25 @@ The leader address is in `base/default.nix` towards the bottom. Only one node is
 the leader, and it should be the same across all nodes. Set the address to the
 node that we just set up as the leader.
 
-base/default.nix
+`base/default.nix`
 
 ```nix
-rpiHomeLab = {
+{
+  rpiHomeLab = {
     k3s.leaderAddress = "https://node1.lab.lan:6443";
-};
+  };
+}
 ```
 
 Setting the rest of the nodes to `k3s = enable` will allow them to join the
 cluster. Copy `/etc/rancher/k3s/k3s.yaml` from the leader node to a local
-`~/.kube/config` to use `kubectl` with the cluster. Once copied ensure the
+`~/.kube/config` to use `kubectl` with the cluster. Once copied, ensure the
 localhost address is changed from `127.0.0.1` to point to a node in the cluster.
 
 You made it! The cluster should be working!
 
 Verify the state with `kubectl get nodes`. You should see a list of nodes and
-their ready state. For instance, my output looks like:
+their ready state. For instance, my output looks like the following:
 
 ```bash
 ➜ kubectl get nodes
@@ -602,26 +702,26 @@ configured correctly.
 
 ## Configuring with Kubenix
 
-The templates include configuration for:
+The templates include configuration for the following:
 
-- traefik
-- metallb setup with an IP Address Pool
-- longhorn
+- Traefik
+- MetalLB setup with an `IPAddressPool`
+- Longhorn
 
 Configuration exists in `deployments/kubenix`.
 
 Note that ServiceLB and the default K3S-managed traffic are disabled with the
-Homelab NixOS module configuration. This is replaced by MetalLB and the traefik
+Homelab NixOS module configuration. This is replaced by MetalLB and the Traefik
 configuration in Kubenix.
 
 Before applying anything, modify the
-[Metal LB Configuration with an IP Address Pool](https://github.com/insipx/nixos-rpi-lab/blob/53c2bdf8fed2389403fa3ae5900fe09a0dc2bcb0/templates/nixos-rpi-lab/deployments/kubenix/metal-lb/default.nix#L56)
+[Metal LB Configuration with an IPAddreslPool](https://github.com/insipx/nixos-rpi-lab/blob/53c2bdf8fed2389403fa3ae5900fe09a0dc2bcb0/templates/nixos-rpi-lab/deployments/kubenix/metal-lb/default.nix#L56)
 
 On my setup, I created a VLAN for `10.10.69.0/22`. This allows me to give Metal
 LB multiple address pools. The DHCP server hands out leases for physical
-machines on a limited range in the `10.10.69.0/24` subnet. That gives me
+machines in a limited range in the `10.10.69.0/24` subnet. That gives me
 `10.10.68.0/24` for my internal app endpoints and `10.10.70.0/24` for external.
-Ensure you include the IP Address pools that you want. This should give more
+Ensure you include the IP address pools that you want. This should give more
 than enough space for apps on a home network, but choose the subnet prefix and
 IP address scheme that suits you.
 
@@ -646,7 +746,7 @@ Apply the manifests with
 nix run .#kubenix -- apply --all
 ```
 
-After a few applies, things should be running! I like to use the
+After a `kubenix apply`, things should be running! I like to use the
 [k9s](https://k9scli.io/) CLI to look at my namespaces/pods.
 
 Running k9s with different namespaces should result in a view of successfully
@@ -658,19 +758,23 @@ k9s -n longhorn-system
 k9s -n metallb-system
 ```
 
+{{
+<image path="/blog/raspberry-pi-homelab/k9s_running.png" alt="desktop" width={800} />
+}}
+
 ### Future posts:
 
 This post is part of a series. It covers initial setup and bootstrap of a k3s
-cluster deployed with NixOS and Kubenix. Future posts could cover:
+cluster deployed with NixOS and Kubenix. Future posts could cover the following:
 
 - Setting up a Certificate Authority for the lab with `step-ca`, OPNSense, and
   cert-manager/kubenix for HTTPS/TLS traffic.
-- Setting up additional worker nodes/thinkcentres
-- Custom Arduino + mini display for thinkcentre mini pc info/IP Address
+- Setting up additional worker nodes/ThinkCentres
+- Custom Arduino + mini display for ThinkCentre mini PC info/IPAddress
 - Observability setup with OPNsense/Grafana/Alloy/Loki (kube-prometheus-stack)
 - My ArgoCD setup + website
 - 2U Mini ITX NAS for a Nix Binary Cache / File Hosting
 - Setting up an AWS Build Server for the Impatient
-- Longhorn on ZFS
-- setting up external reverse proxy gateway incl. the noise protocol
+- setting up external reverse proxy gateway (rathole) with
+  [the noise protocol](https://noiseprotocol.org/)
 - cross-compiling rust packages to musl and x86 docker images

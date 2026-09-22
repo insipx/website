@@ -11,7 +11,7 @@ title = "Links"
 - [my homelab](https://github.com/insipx/jupiter)
 - [this website](https://github.com/insipx/website/)
 - [brainfuck but with emojis using `peg`](https://github.com/Romulus10/emotif___)
-- [WebAssembly SQLite Extension for Diesel](https://github.com/xmtp/sqlite-web-rs)
+- [WebAssembly SQLite Backend for Diesel](https://github.com/xmtp/sqlite-web-rs)
 - [my neovim configuration](https://github.com/insipx/neovim)
 - [a NeXTSTEP inspired gui-OS with soon-to-be WebAssembly aspirations](https://github.com/insipx/portfolio-os)
 - [xchat](https://github.com/insipx/xchat) an experiment with ratatui UI for

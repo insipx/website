@@ -1,10 +1,14 @@
 +++
 title = "Writing a Window Manager in Rust (Ruwm)"
 date = 2017-07-23
-authors = [ "Andrew Plaza" ]
+authors = ["Andrew Plaza"]
 tags = ["code", "linux"]
 categories = ["code"]
 +++
+
+> [!NOTE]
+> This post is republished from my previous website and is still available
+> [here](https://github.com/insipx/code.LiquidThink/blob/master/src/_posts/2017-07-23-writing-a-window-manager-in-rust%20(Ruwm).markdown)
 
 So I decided to write a window manager. Also this is my first post, a whole 6
 (ish?) months since I actually created this website. My three test posts have
@@ -41,7 +45,7 @@ made probably because it's more natural for an average person to move windows
 around, resize them, and generally use their environment with ease. Tiling
 Window Managers, on the other hand, are made to be as lightweight and efficient
 as possible. Some are made in less than 1000 lines of code, (XMonad, dwm, and
-even i3 are quite small programs). They are generally used by people who value
+even i3 are minimal programs). They are generally used by people who value
 function over ease-of-use. However, this does not mean they can't look amazing
 (a look at [unixporn](http://reddit.com/r/unixporn) is proof).
 
@@ -55,11 +59,11 @@ than use of the mouse (keyboard bindings since they are faster).
 ## Why am I writing my own?
 
 Don't get me wrong, there are tons of great Window Managers and Desktop
-environments out there. My current favorite, i3, is amazing for what it does.
+environments out there. My current favorite, i3, is remarkable for what it does.
 Which is why I am modeling much of the functionality of the Window Manager I am
 writing against it. I've used dwm, XMonad, AwesomeWM in the past, and they're
-all great. Many WM's, however, are missing some core functionality which I think
-comes in very useful
+all great. Many WM's, however, are missing some core functionality, which I
+think comes in very useful.
 
 ### HiDPI Support
 
@@ -84,9 +88,9 @@ touch-gestures on a laptop touch-screen, instead of entirely relying on the
 keyboard. Even if a user uses the keyboard 90% of the time, there are instances
 where not having touch-screen support is absolutely annoying. For example,
 Laptop-all-in-ones are becoming increasingly popular these days, and when
-flipped in 'tablet mode' my laptop essentially becomes unusable. In order to do
-anything, I have to finagle my way to the keyboard. Having Gnu+Linux/i3 as my
-daily driver, this gets annoying, fast.
+flipped in 'tablet mode' my laptop essentially becomes unusable. To do anything,
+I have to finagle my way to the keyboard. Having Gnu+Linux/i3 as my daily
+driver, this gets annoying, fast.
 
 ### Rust
 
@@ -103,7 +107,7 @@ in neatly-mapped memory spaces, but most of all, it's a memory-safe language
 ripe for writing low-level systems-programs in. In addition to all that, Rusts
 library is still quite young, but some codebases are finally maturing. Tokio,
 Hyper, serde, among others, mean my Window Manager can accomplish IPC support
-quite easily (similar to i3's IPC implementation). So I thought, why not! Let's
+effortlessly (similar to i3's IPC implementation). So I thought, why not! Let's
 do it.
 
 ### Why not Wayland?
