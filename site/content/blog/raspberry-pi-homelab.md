@@ -65,8 +65,8 @@ NixOS makes this workflow easy.
 ## Why K3s?
 
 I decided K3s is the way. K3S is a lighter distribution of K8S that I run with
-the embedded `etcd`. Part of this project was meant to help me learn Kubernetes,
-and K3S would let me run the Docker images with the workflow I expected.
+embedded `etcd`. Part of this project was meant to help me learn Kubernetes, and
+K3S would let me run the Docker images with the workflow I expected.
 
 ### Kubenix
 
@@ -106,18 +106,18 @@ pure Kubernetes manifests (like my
 
 ## Updates
 
-The update flow I settled on is `Renovate` to update Helm chart/docker image
-versions in Kubenix definitions. I merge those in GitHub CI, then update the Nix
-hashes manually next time I pull/want to update. Then I run a single
-`colmena build --on @homelab` to build everything at once (with my AWS build
-server if I need it), then `colmena apply --on @homelab`. Updates resulting in
-breaking changes imply time spent fixing things. Renovate is nice insofar as it
-sometimes gives a list of changes in the updated versions, so I get some
-warning. Having control over _when_ updates occur, the bulk
-application/deployment is a huge improvement over my previous self-hosting
-attempts. Improvements can be made with automated Cachix/binary cache deploys,
-for instance. I haven’t explored this much yet, though, as the current update
-flow suits my needs.
+The update flow I settled on is [Renovate](https://docs.renovatebot.com/).
+Renovate updates Helm chart/docker image versions in Kubenix definitions. I
+merge those in GitHub CI, then update the Nix hashes manually next time I
+pull/want to update. Then I run a single `colmena build --on @homelab` to build
+everything at once (with my AWS build server if I need it), then
+`colmena apply --on @homelab`. Updates resulting in breaking changes imply time
+spent fixing things. Renovate is nice insofar as it sometimes gives a list of
+changes in the updated versions, so I get some warning. Having control over
+_when_ updates occur, the bulk application/deployment is a huge improvement over
+my previous self-hosting attempts. Improvements can be made with automated
+Cachix/binary cache deploys, for instance. I haven’t explored this much yet,
+though, as the current update flow suits my needs.
 
 > [!NOTE]
 > I extracted relevant bits for this post into
