@@ -74,9 +74,7 @@ The one thing unattractive about Kubernetes was the YAML manifest format.
 Spending far too much time configuring GitHub Actions scarred me. In addition to
 my hesitancy with YAML, using Kubernetes would mean the project is split between
 Nix and Kubernetes manifests. It would require extra verification steps,
-ensuring the parts worked well in isolation and as a whole. Part of the system
-would be defined in Nix (the OS configuration, services, packages, and
-Kubernetes software itself), while the other would be YAML.
+ensuring the parts worked well in isolation and as a whole.
 
 This discrepancy made me wish a Nix-y way of configuring at least the platform
 to deploy existed. Luckily, I found the
@@ -85,7 +83,7 @@ Kubernetes state with Nix. It is first defined in Nix, then the `kubenix`
 command outputs built Kubernetes manifests. Kubenix handles pruning old state,
 so deployments more accurately reflect what exists on the cluster.
 
-Kubenix solved this problem for me. With Kubenix I could have the following:
+With Kubenix I could have the following:
 
 - one language for everything
 - resource types type-checked against the API schema at eval time
@@ -93,31 +91,29 @@ Kubenix solved this problem for me. With Kubenix I could have the following:
 - prune on apply
 
 This way, I enabled configuring the platform for my apps (OS Hosts, Load
-Balancer, Observability, and Metrics) in one language. ArgoCD would let me still
-use Kubernetes manifests if I wished.
+Balancer, Observability, and Metrics) in one language.
 
 ### Versatility
 
 Kubernetes comes with a bunch of goodies baked in. HA/Load
 Balancing/Self-Healing, etc. But above all, I liked the extensibility. If I
-wanted, I could (and did!) add ArgoCD for an alternate means of deployment with
-pure Kubernetes manifests (like my
-[website](https://github.com/insipx/website/)).
+wanted, I added ArgoCD for an alternate means of deployment with pure Kubernetes
+manifests (like my [website](https://github.com/insipx/website/)).
 
 ## Updates
 
 The update flow I settled on is [Renovate](https://docs.renovatebot.com/).
 Renovate updates Helm chart/docker image versions in Kubenix definitions. I
-merge those in GitHub CI, then update the Nix hashes manually next time I
-pull/want to update. Then I run a single `colmena build --on @homelab` to build
-everything at once (with my AWS build server if I need it), then
-`colmena apply --on @homelab`. Updates resulting in breaking changes imply time
-spent fixing things. Renovate is nice insofar as it sometimes gives a list of
+merge those in GitHub CI, update the Nix hashes manually next time I pull/want
+to update, and run a single `colmena build --on @homelab` to build everything at
+once (with my AWS build server if I need it). Updating the machines becomes a ta
+single `colmena apply --on @homelab`. Updates resulting in breaking changes
+imply time spent fixing things. Renovate is nice since it gives a list of
 changes in the updated versions, so I get some warning. Having control over
 _when_ updates occur, the bulk application/deployment is a huge improvement over
-my previous self-hosting attempts. Improvements can be made with automated
-Cachix/binary cache deploys, for instance. I haven’t explored this much yet,
-though, as the current update flow suits my needs.
+my previous self-hosting attempts. Further improvements can be made with
+automated Cachix/binary cache deploys, for instance. I haven’t explored this
+much yet, though, as the current update flow suits my needs.
 
 > [!NOTE]
 > I extracted relevant bits for this post into
@@ -260,10 +256,10 @@ For setting up the Raspberry Pis, we care about two things:
 
 ## Setting up the Pis
 
-For the initial installation,
-[nvmd/nixos-raspberrypi](https://github.com/nvmd/nixos-raspberrypi) has great
-info/examples. The first step after getting all the right materials is figuring
-out how to get NixOS onto the Raspberry Pi in the first place.
+For the initial installation, I was able to refer to
+[nvmd/nixos-raspberrypi](https://github.com/nvmd/nixos-raspberrypi). That's the
+repository that built support for Raspberry Pi 5s, and includes some examples to
+get started in addition to this guide.
 
 1. Build and flash the NixOS Raspberry Pi image onto the SD card.
 2. Modify the configuration in installer_images.nix to allow SSH access to the
@@ -274,20 +270,25 @@ out how to get NixOS onto the Raspberry Pi in the first place.
    debugging. If something goes wrong, we can insert the original SD image to
    access a Nix chroot environment and fix it.
 
-The SD image we build is initialInstall and includes all the NixOS configuration
-modules in base/ and machine-specific/rpi5. This includes the custom kernel from
-nvmd/nixos-raspberrypi and other quality-of-life packages. This explicitly
-excludes filesystem.nix, which is set up in the next step with Disko, where you
-should modify the SSH keys and other configuration you might want on the Pis,
-such as the specific terminfo package for your favorite terminal emulator or a
-preferred text editor. The SD card will be reusable for any further Raspberry
-Pis you set up.
+The SD image we build is `initialInstall` and includes all the NixOS
+configuration modules in `base/` and `machine-specific/rpi5`. This includes the
+custom kernel from `nvmd/nixos-raspberrypi` and other quality-of-life packages.
+This explicitly excludes `filesystem.nix`, which is set up in the next step with
+Disko.
+
+On this step, ensure you modify 'base' to include SSH keys and other
+configuration you might want on the Pis, such as the specific terminfo package
+for your favorite terminal emulator or a preferred text editor. The SD card will
+be reusable for any further Raspberry Pis you set up.
 
 Once ready, the commands are roughly:
 
 ```bash
-# build & the image, from the #lab flake repository
-nix build .#sdImages.initialInstall
+# build the image, from the #lab flake repository
+# `accept-flake-config` ensures use of the binary caches defined in the template.
+# thats the nixos-community cache and the nixos-raspberry pi cache.
+# if you prefer compiling the kernel on your own, omit the flag.
+nix build --accept-flake-config .#sdImages.initialInstall
 
 # extract the zstd to an `.img` file somewhere
 zstd -d result/sd-image/nixos-installer-rpi5-kernel.img.zst -o nixos-installer-rpi5-kernel.img
@@ -303,20 +304,22 @@ should be able to SSH, which is important for the nixos-anywhere command.
 
 ## nixos-anywhere
 
-Once the SD card is installed, the next step is making use of the connected NVMe
-drive. K3S can be write-heavy; an NVMe will last longer than an SD card. While
-this setup would work with SD cards, expect performance degradation.
+Once the SD card is installed, we need to make use of the connected NVMe drive.
+K3S can be write-heavy; an NVMe will last longer than an SD card. While this
+setup would work with SD cards, expect performance degradation.
 
 The configuration uses [Disko](https://github.com/nix-community/disko) for
 initial disk setup. The setup is almost completely
 [verbatim to the example in nixos-raspberrypi](https://github.com/nvmd/nixos-raspberrypi-demo/blob/main/disko-nvme-zfs.nix).
 The one difference is important, because it enables Longhorn.
 
-Towards the bottom, an ext4 volume is defined. The homelab module allows
-configuring the volume size (on _initial_ install). The size is defined in the
-`rpiHomeLab` module. Longhorn does not work with ZFS; we need to create an
-overlay to make use of it. This can be skipped if the install is a pure SD-card
-install or if you choose a filesystem other than ZFS.
+Towards the bottom of `filesystem.nix`, an ext4 volume is defined. The homelab
+module allows configuring the volume size (on _initial_ install). The size is
+defined in the `rpiHomeLab` module. Longhorn does not work with ZFS. Instead, we
+need to create an ext4 volume on ZFS use it. This can be skipped if the install
+is a pure SD-card install or if you choose a filesystem other than ZFS. Just
+make sure Longhorn also supports this other filesystem. I like ZFS for its
+abilty to automate backups with snapshots, so that's why I'm using it here.
 
 ```nix
 {
@@ -420,9 +423,10 @@ configuration.
 ```
 
 At this point, Colmena should be able to build/apply to nodes. Ensure that `k3s`
-is disabled, however, since k3s requires extra steps to bootstrap the secret
-correctly. Secrets set to 'true' also will not be used unless
-`k3s.enable = true`, so no worries there about exposing anything K3S-related.
+is disabled, however, since K3s requires extra steps to bootstrap the secret
+correctly. Secrets set to `true` also will not be used unless
+`k3s.enable = true`, so no worries there about exposing anything K3S-related by
+accident.
 
 ## Setting up Secrets
 
@@ -493,7 +497,7 @@ keys. For instance, the YAML would look like the following:
 # for a more complex example.
 keys:
   - &admin age1REPLACE_WITH_YOUR_ADMIN_PUBLIC_KEY
-  - &node_1 age1q9420838rcwr3mykp3juf3f5ntwwudndlmeyxmaanr5ekqmgzdvshjph7z# ./keyscan.sh 192.168.1.100
+  - &node_1 age1q9420838rcwr3mykp3juf3f5ntwwudndlmeyxmaanr5ekqmgzdvshjph7z #./keyscan.sh 192.168.1.100
   - &node_2 age1REPLACE_WITH_NODE_2_HOST_KEY # ./keyscan.sh node2
   - &node_3 age1REPLACE_WITH_NODE_3_HOST_KEY # ./keyscan.sh node3
 creation_rules:
@@ -715,7 +719,7 @@ Homelab NixOS module configuration. This is replaced by MetalLB and the Traefik
 configuration in Kubenix.
 
 Before applying anything, modify the
-[Metal LB Configuration with an IPAddreslPool](https://github.com/insipx/nixos-rpi-lab/blob/53c2bdf8fed2389403fa3ae5900fe09a0dc2bcb0/templates/nixos-rpi-lab/deployments/kubenix/metal-lb/default.nix#L56)
+[Metal LB Configuration with an IPAddressPool](https://github.com/insipx/nixos-rpi-lab/blob/53c2bdf8fed2389403fa3ae5900fe09a0dc2bcb0/templates/nixos-rpi-lab/deployments/kubenix/metal-lb/default.nix#L56)
 
 On my setup, I created a VLAN for `10.10.69.0/22`. This allows me to give Metal
 LB multiple address pools. The DHCP server hands out leases for physical
