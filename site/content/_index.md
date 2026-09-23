@@ -5,7 +5,7 @@ title = "About"
 # Andrew
 
 Mostly a Rust/Nix Systems Engineer. I like distributed systems, reproducible
-builds and Linux.
+builds, and Linux.
 
 Find me on [GitHub](https://github.com/insipx).
 
