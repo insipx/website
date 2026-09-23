@@ -73,6 +73,8 @@ async fn main() -> Result<(), Report> {
         tracing_subscriber::registry().with(fmt::layer()).init();
     }
 
+    // the directory is a hashed nix store path. so its a great indicator
+    // of whether the website content has changed.
     let etag = ETag::new(&dir);
 
     tracing::info!("serving {dir} on 0.0.0.0:{port} etag={}", &etag);
